@@ -13,8 +13,30 @@ CREATE TABLE Time_Jogo (ID_TIME INT NOT NULL, ID_JOGO INT NOT NULL, PRIMARY KEY 
 pontuacao INT NOT NULL, vencedor BOOLEAN NOT NULL,
 FOREIGN KEY (ID_TIME) REFERENCES Time(ID), FOREIGN KEY (ID_JOGO) REFERENCES Jogo(ID));
 
-CREATE TABLE Jogador (ID SERIAL PRIMARY KEY, nome TEXT NOT NULL, ID_TIME INT NOT NULL,
+CREATE TABLE Jogador (ID SERIAL PRIMARY KEY, nome TEXT NOT NULL, ID_TIME INT NOT NULL, carteira_stellar VARCHAR(56) UNIQUE DEFAULT NULL,
 FOREIGN KEY (ID_TIME) REFERENCES Time(ID));
+
+CREATE TABLE Jogador_Jogo (
+    ID_JOGADOR INT NOT NULL,
+    ID_JOGO INT NOT NULL,
+    pontos_marcados INT DEFAULT 0,
+    PRIMARY KEY (ID_JOGADOR, ID_JOGO),
+    FOREIGN KEY (ID_JOGADOR) REFERENCES Jogador(ID),
+    FOREIGN KEY (ID_JOGO) REFERENCES Jogo(ID)
+);
+
+
+CREATE TABLE Transacao_Recompensa (
+    ID SERIAL PRIMARY KEY,
+    ID_JOGADOR INT NOT NULL,
+    ID_JOGO INT NOT NULL,
+    valor_pago NUMERIC(19, 7) NOT NULL, -- Stellar utiliza 7 casas decimais de precisão
+    hash_transacao VARCHAR(64) UNIQUE,
+    status VARCHAR(20) DEFAULT 'PENDENTE', -- Ex: PENDENTE, SUCESSO, FALHA
+    data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ID_JOGADOR) REFERENCES Jogador(ID),
+    FOREIGN KEY (ID_JOGO) REFERENCES Jogo(ID)
+);
 
 INSERT INTO Usuario (login, senha) VALUES
 ('admin', '12345678'),
@@ -37,7 +59,7 @@ INSERT INTO Time (nome, sigla) VALUES
 ('Gamma Titans', 'GMT');
 
 INSERT INTO Jogador (nome, ID_TIME) VALUES
-('Alice Silva', 1),
+('Alice Silva', 1, ),
 ('Bob Santos', 1),
 ('Charlie Costa', 2),
 ('David Oliveira', 2),
@@ -55,3 +77,11 @@ INSERT INTO Time_Jogo (ID_TIME, ID_JOGO, pontuacao, vencedor) VALUES
 (3, 2, 2, TRUE),
 (1, 3, 1, FALSE),
 (3, 3, 1, FALSE);
+
+INSERT INTO Jogador_Jogo (ID_JOGADOR, ID_JOGO, pontos_marcados) VALUES
+(1, 1, 3),
+(2, 1, 1),
+(2, 2, 0),
+(3, 2, 2),
+(1, 3, 1),
+(3, 3, 1);

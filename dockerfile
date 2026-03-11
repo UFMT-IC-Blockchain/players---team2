@@ -1,3 +1,3 @@
 FROM postgres
-COPY script.sql /docker-entrypoint-initdb.d/
+COPY db.sql /docker-entrypoint-initdb.d/
 ENV POSTGRES_PASSWORD=postgres
