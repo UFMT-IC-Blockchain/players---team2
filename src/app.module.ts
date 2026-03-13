@@ -2,16 +2,19 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as dbConfig from '../configdb.json';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
+   TypeOrmModule.forRoot({
       type: 'postgres',
-      url: dbConfig.url,
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
+      database: 'postgres',
       entities: [],
       synchronize: true,
-      autoLoadEntities: true,
+      autoLoadEntities: true
     }),
   ],
   controllers: [AppController],
